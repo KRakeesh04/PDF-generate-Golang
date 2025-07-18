@@ -213,7 +213,7 @@ func GenerateAdmissionSheetForAllStudents(students []StudentAdmission, num int) 
 	pdf.SetLineWidth(0.5)
 
 	// Add header image
-	SetImgPositionAndStyle(pdf, 25, 15, "admission_src/Header.png", 545, 120.5)
+	SetImgPositionAndStyle(pdf, 25, 15, "admission_src/Header.png", 545, 150.5)
 	// Add footer image
 	SetImgPositionAndStyle(pdf, 25, 823, "admission_src/Footer_black.png", 545, 15)
 	// Add background img
@@ -243,8 +243,8 @@ func GenerateAdmissionSheetForAllStudents(students []StudentAdmission, num int) 
 	SetTextPositionAndAlign(pdf, 410, 82, align, subject, fontName, 11)
 	SetTextPositionAndAlign(pdf, 140, 107, align, date, fontName, 11)
 	
-	SetTextPositionAndAlign(pdf, 40, 145, align,  "Center : ", fontName, 12)
-	SetTextPositionAndAlign(pdf, 88, 145, align,  center, fontName, 11)
+	// SetTextPositionAndAlign(pdf, 40, 145, align,  "Center : ", fontName, 12)
+	SetTextPositionAndAlign(pdf, 90, 142, align,  center, fontName, 11)
 
 
 	// set bold font for the headings
