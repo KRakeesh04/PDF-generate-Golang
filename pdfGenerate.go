@@ -343,9 +343,9 @@ func GenerateAdmissionSheetForAllStudents(students []StudentAdmission, num int) 
 
 func formatNumber(n int) string {
 	if n < 10 {
-		return "0" + fmt.Sprint('0'+n)
+		return "0" + fmt.Sprint(n)
 	}
-	return fmt.Sprint('0'+n/10) + fmt.Sprint('0'+n%10)
+	return fmt.Sprint(n)
 }
 
 func sum(arr []float64) float64 {
