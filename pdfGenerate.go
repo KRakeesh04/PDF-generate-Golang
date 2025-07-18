@@ -199,7 +199,7 @@ func main() {
 func GenerateAdmissionSheetForAllStudents(students []StudentAdmission, num int) {
 
 	district := "JAFFNA"
-	center := ""	// "Jaffna Central College"
+	center := "Jaffna Central College"
 	subject := "ICT"
 	sub_number := "10"
 	part := "II"
@@ -213,81 +213,60 @@ func GenerateAdmissionSheetForAllStudents(students []StudentAdmission, num int) 
 	pdf.SetLineWidth(0.5)
 
 	// Add header image
-	rect := gopdf.Rect{
-		W: 545, // width in points
-		H: 130, // height in points
-	}
-	err := pdf.Image("HeaderFooter/header - admission sheet - 2025.png", 25, 15, &rect)
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	SetImgPositionAndStyle(pdf, 25, 15, "admission_src/Header.png", 545, 120.5)
 	// Add footer image
-	rect = gopdf.Rect{
-		W: 545, // width in points
-		H: 20,  // height in points
-	}
-	err = pdf.Image("HeaderFooter/Footer - Admission sheet 0=2025.png", 25, 810, &rect)
-	if err != nil {
-		log.Fatal(err)
-	}
+	SetImgPositionAndStyle(pdf, 25, 823, "admission_src/Footer_black.png", 545, 15)
+	// Add background img
+	SetImgPositionAndStyle(pdf, 120, 370, "admission_src/logo_light.png", 350, 195)
+
 
 	// Add normal font
-	err = pdf.AddTTFFont("dejavu", "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
+	err := pdf.AddTTFFont("segoeuithis", "admission_src/segoe-ui-this/segoeuithis.ttf")
 	if err != nil {
 		log.Fatal("AddTTFFont normal failed:", err)
 	}
 
 	// Add bold font
-	err = pdf.AddTTFFont("dejavu_bold", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")
+	err = pdf.AddTTFFont("segoeuithis_bold", "admission_src/segoe-ui-this/segoeuithibd.ttf")
 	if err != nil {
 		log.Fatal("AddTTFFont bold failed:", err)
 	}
 
-	// Add header informtions
-	err = pdf.SetFont("dejavu", "", 12)
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	
+	fontName := "segoeuithis"
 	align := gopdf.CellOption{Align: gopdf.Center | gopdf.Middle}
-	SetTextPositionAndAlign(pdf, 160, 110, align, sub_number)
-	SetTextPositionAndAlign(pdf, 200, 110, align, medium)
-	SetTextPositionAndAlign(pdf, 235, 110, align, part)
-
-	// Add header informtions
-	err = pdf.SetFont("dejavu", "", 10)
-	if err != nil {
-		log.Fatal(err)
-	}
+	SetTextPositionAndAlign(pdf, 160, 103, align, sub_number, fontName, 12)
+	SetTextPositionAndAlign(pdf, 200, 103, align, medium, fontName, 12)
+	SetTextPositionAndAlign(pdf, 235, 103, align, part, fontName, 12)
 	align = gopdf.CellOption{Align: gopdf.Left | gopdf.Middle}
-	SetTextPositionAndAlign(pdf, 410, 115, align, district)
-	SetTextPositionAndAlign(pdf, 410, 95, align, center)
-	SetTextPositionAndAlign(pdf, 410, 75, align, subject)
-	SetTextPositionAndAlign(pdf, 140, 117, align, date)
+	SetTextPositionAndAlign(pdf, 410, 107, align, district, fontName, 11)
+	SetTextPositionAndAlign(pdf, 410, 82, align, subject, fontName, 11)
+	SetTextPositionAndAlign(pdf, 140, 107, align, date, fontName, 11)
+	
+	SetTextPositionAndAlign(pdf, 40, 145, align,  "Center : ", fontName, 12)
+	SetTextPositionAndAlign(pdf, 88, 145, align,  center, fontName, 11)
+
 
 	// set bold font for the headings
-	err = pdf.SetFont("dejavu_bold", "", 11.5)
+	err = pdf.SetFont("segoeuithis_bold", "", 11.5)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Table settings
-	startX := 25.0  // starting position on the page where the table begins.
-	startY := 160.0 //
+	startX := 25.0  
+	startY := 175.0 
 	rowHeight := 24.5
-	numRows := 25 + 1 // +1 for header row
+	numRows := 25 + 1 
 
 	// Column widths
 	colWidths := []float64{20, 70, 260, 80, 50, 65}
-
-	// Draw header
 	headers := []string{"No", "IndexNo", "Name", "Signature", "Marks", "Checked"}
 
 	x := startX
 	y := startY
 
-	pdf.SetFillColor(220, 220, 220) // light gray
+	pdf.SetFillColor(240, 240, 240) // light gray
 	for _, w := range colWidths {
 		pdf.RectFromUpperLeftWithStyle(x, y, w, rowHeight, "F") // fill rectangle
 		x += w
@@ -308,7 +287,7 @@ func GenerateAdmissionSheetForAllStudents(students []StudentAdmission, num int) 
 	}
 	y += rowHeight
 
-	err = pdf.SetFont("dejavu", "", 10)
+	err = pdf.SetFont("segoeuithis", "", 10)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -322,7 +301,6 @@ func GenerateAdmissionSheetForAllStudents(students []StudentAdmission, num int) 
 
 		cols := []string{
 			formatNumber(i + 1),
-			// s.Stream,
 			strconv.Itoa(s.IndexNo) + "000",
 			FormatNameInitials(s.Name),
 			"",
@@ -346,7 +324,6 @@ func GenerateAdmissionSheetForAllStudents(students []StudentAdmission, num int) 
 
 			x += colWidths[j]
 		}
-
 		// Draw the right border for a cell
 		pdf.Line(x, startY, x, startY+float64(numRows)*rowHeight)
 
@@ -356,7 +333,7 @@ func GenerateAdmissionSheetForAllStudents(students []StudentAdmission, num int) 
 	// Draw the bottom border for the last row
 	pdf.Line(startX, y, startX+sum(colWidths), y)
 
-	// Save
+	// Save pdf
 	err = pdf.WritePdf(fmt.Sprintf("generated/admission_sheet_no_%d.pdf", num))
 	if err != nil {
 		log.Fatal(err)
@@ -415,12 +392,27 @@ func FormatNameInitials(name string) string {
 	return strings.TrimSpace(initials)
 }
 
-func SetTextPositionAndAlign(pdf *gopdf.GoPdf, x, y float64, align gopdf.CellOption, text string) {
+func SetTextPositionAndAlign(pdf *gopdf.GoPdf, x, y float64, align gopdf.CellOption, text string, fontName string, size int) {
+	err := pdf.SetFont(fontName, "", size)
+	if err != nil {
+		log.Fatal(err)
+	}
 	pdf.SetX(x)
 	pdf.SetY(y)
 	// Use a fixed width and height for the cell
 	pdf.CellWithOption(&gopdf.Rect{W: 200, H: 20}, text, align)
 	pdf.SetTextColor(0, 0, 0)       // Reset text color to black
 	pdf.SetFillColor(255, 255, 255) // Reset fill color
+}
+
+func SetImgPositionAndStyle(pdf *gopdf.GoPdf, x, y float64, imgPath string, w, h float64) {
+	rect := gopdf.Rect{
+		W: w, // width in points
+		H: h,  // height in points
+	}
+	err := pdf.Image(imgPath, x, y, &rect)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
